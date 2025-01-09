@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Training agent for Panopticon</title>
+        <title>Training Agents for Panopticon</title>
         <meta name="robots" content="noindex">
 
 
@@ -121,7 +121,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">Training agent for Panopticon</h1>
+                    <h1 class="menu-title">Training Agents for Panopticon</h1>
 
                     <div class="right-buttons">
                         <a href="print.html" title="Print this book" aria-label="Print this book">
@@ -159,7 +159,28 @@
 <p>Let’s dive in and start building a simple aircraft agent!</p>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="layout-of-blade-and-its-interface-with-openai-gymnasium"><a class="header" href="#layout-of-blade-and-its-interface-with-openai-gymnasium"><strong>Layout of BLADE and Its Interface with OpenAI Gymnasium</strong></a></h3>
 <p>To effectively use the <strong>BLADE</strong> environment with OpenAI Gymnasium, it’s essential to understand its architecture and how it bridges the simulation features of Panopticon with the modular reinforcement learning ecosystem of Gym. Here’s a structured breakdown:</p>
-<hr />
+<h3 id="basic-training-loop"><a class="header" href="#basic-training-loop"><strong>Basic Training Loop</strong></a></h3>
+<pre><code class="language-plaintext">+--------------------------------+
+|          Reinforcement         |
+|          Learning Agent        |
++--------------------------------+
+         |           ^
+ Actions |           | Observations, Rewards
+         v           |
++--------------------------------+
+|         BLADE Environment       |
+| (Gym-compatible Interface)      |
++--------------------------------+
+         |           ^
+ Commands|           | Filtered Observations
+         v           |
++--------------------------------+
+|        Game (Simulation Core)   |
+|  - Scenario                     |
+|  - Entities (Aircraft, Ships)   |
+|  - Missions (Patrol, Strike)    |
++--------------------------------+
+</code></pre>
 <h3 id="blade-layout"><a class="header" href="#blade-layout"><strong>BLADE Layout</strong></a></h3>
 <p>The BLADE environment acts as a wrapper that integrates the simulation capabilities of the Panopticon system with the reinforcement learning framework. Here’s how its key components are organized:</p>
 <ol>
@@ -189,7 +210,6 @@
 </ul>
 </li>
 </ol>
-<hr />
 <h3 id="interface-with-openai-gymnasium"><a class="header" href="#interface-with-openai-gymnasium"><strong>Interface with OpenAI Gymnasium</strong></a></h3>
 <p>BLADE leverages the Gymnasium API to create a reinforcement learning environment. Here's how it connects the dots:</p>
 <ol>
@@ -255,7 +275,6 @@
 </ul>
 </li>
 </ol>
-<hr />
 <h3 id="how-it-all-fits-together"><a class="header" href="#how-it-all-fits-together"><strong>How It All Fits Together</strong></a></h3>
 <p>When you combine BLADE with Gymnasium, you get an environment that acts as a bridge between the high-fidelity simulation of Panopticon and the algorithms provided by reinforcement learning libraries like Stable-Baselines3. Here's the flow:</p>
 <ol>
@@ -264,31 +283,6 @@
 <li>The simulation updates its state, calculates rewards, and checks for termination.</li>
 <li>Filtered observations and rewards are returned to the agent, closing the loop.</li>
 </ol>
-<hr />
-<h3 id="basic-training-loop"><a class="header" href="#basic-training-loop"><strong>Basic Training Loop</strong></a></h3>
-<pre><code class="language-plaintext">+--------------------------------+
-|          Reinforcement         |
-|          Learning Agent        |
-+--------------------------------+
-         |           ^
- Actions |           | Observations, Rewards
-         v           |
-+--------------------------------+
-|         BLADE Environment       |
-| (Gym-compatible Interface)      |
-+--------------------------------+
-         |           ^
- Commands|           | Filtered Observations
-         v           |
-+--------------------------------+
-|        Game (Simulation Core)   |
-|  - Scenario                     |
-|  - Entities (Aircraft, Ships)   |
-|  - Missions (Patrol, Strike)    |
-+--------------------------------+
-</code></pre>
-<hr />
-<p>By combining Panopticon’s robust simulation features with the modularity of Gym, BLADE opens the door to training intelligent agents for complex scenarios in a structured, scalable way.</p>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="setting-up-your-environment"><a class="header" href="#setting-up-your-environment"><strong>Setting Up Your Environment</strong></a></h3>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="designing-observations-and-actions"><a class="header" href="#designing-observations-and-actions"><strong>Designing Observations and Actions</strong></a></h3>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="detailed-explanation-of-the-reward-function"><a class="header" href="#detailed-explanation-of-the-reward-function"><strong>Detailed Explanation of the Reward Function</strong></a></h3>
