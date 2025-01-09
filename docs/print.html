@@ -167,10 +167,8 @@
 <h4 id="how-it-works"><a class="header" href="#how-it-works"><strong>How It Works</strong></a></h4>
 <ol>
 <li>
-<p><strong>Calculate Distance</strong>:</p>
-<ul>
-<li>The function calculates the Euclidean distance from the aircraft’s previous position to the goal (<code>previous_distance</code>) and from its current position to the goal (<code>current_distance</code>).</li>
-</ul>
+<p><strong>Calculate Distance</strong>:
+The function calculates the Euclidean distance from the aircraft’s previous position to the goal (<code>previous_distance</code>) and from its current position to the goal (<code>current_distance</code>).</p>
 <pre><code class="language-python">previous_distance = euclidean_distance(
     [previous_latitude, previous_longitude], goal_coordinates
 )
@@ -180,22 +178,17 @@ current_distance = euclidean_distance(
 </code></pre>
 </li>
 <li>
-<p><strong>Compute Reward</strong>:</p>
-<ul>
-<li>The difference between the previous and current distances determines progress:
+<p><strong>Compute Reward</strong>:
+The difference between the previous and current distances determines progress:</p>
 <pre><code class="language-python">distance_progress_reward = scaling_factors.get("distance") * (
     previous_distance - current_distance
 )
 </code></pre>
-</li>
-<li>If the aircraft moves closer to the goal, the reward is positive. Moving away results in a negative reward.</li>
-</ul>
+<p>If the aircraft moves closer to the goal, the reward is positive. Moving away results in a negative reward.</p>
 </li>
 <li>
-<p><strong>Scaling Factor</strong>:</p>
-<ul>
-<li>A scaling factor (<code>scaling_factors.get("distance")</code>) adjusts the reward’s magnitude to influence the agent's learning.</li>
-</ul>
+<p><strong>Scaling Factor</strong>:
+A scaling factor (<code>scaling_factors.get("distance")</code>) adjusts the reward’s magnitude to influence the agent's learning.</p>
 </li>
 </ol>
 <h4 id="why-its-important"><a class="header" href="#why-its-important"><strong>Why It’s Important</strong></a></h4>
@@ -210,40 +203,29 @@ current_distance = euclidean_distance(
 <h4 id="how-it-works-1"><a class="header" href="#how-it-works-1"><strong>How It Works</strong></a></h4>
 <ol>
 <li>
-<p><strong>Calculate Target Heading</strong>:</p>
-<ul>
-<li>The target heading is the angle between the aircraft’s current position and the goal:
+<p><strong>Calculate Target Heading</strong>:
+The target heading is the angle between the aircraft’s current position and the goal:</p>
 <pre><code class="language-python">target_heading = get_bearing_between_two_points(
     aircraft.latitude, aircraft.longitude, goal_coordinates[0], goal_coordinates[1]
 )
 </code></pre>
 </li>
-</ul>
-</li>
 <li>
-<p><strong>Calculate Heading Difference</strong>:</p>
-<ul>
-<li>The difference between the aircraft’s current heading (<code>previous_heading</code>) and the target heading is normalized to a range of 0°–180°:
+<p><strong>Calculate Heading Difference</strong>:
+The difference between the aircraft’s current heading (<code>previous_heading</code>) and the target heading is normalized to a range of 0°–180°:</p>
 <pre><code class="language-python">heading_difference = abs((previous_heading - target_heading + 180) % 360 - 180)
 </code></pre>
 </li>
-</ul>
-</li>
 <li>
-<p><strong>Compute Reward</strong>:</p>
-<ul>
-<li>The reward decreases linearly with the heading difference:
+<p><strong>Compute Reward</strong>:
+The reward decreases linearly with the heading difference:</p>
 <pre><code class="language-python">heading_alignment_reward = (1 - heading_difference / 180.0) * scaling_factors.get("heading_align")
 </code></pre>
-</li>
-<li>A perfectly aligned heading yields the maximum reward, while a completely opposite heading (180° off) results in no reward.</li>
-</ul>
+<p>A perfectly aligned heading yields the maximum reward, while a completely opposite heading (180° off) results in no reward.</p>
 </li>
 <li>
-<p><strong>Scaling Factor</strong>:</p>
-<ul>
-<li>A scaling factor (<code>scaling_factors.get("heading_align")</code>) adjusts the importance of alignment relative to other rewards.</li>
-</ul>
+<p><strong>Scaling Factor</strong>:
+A scaling factor (<code>scaling_factors.get("heading_align")</code>) adjusts the importance of alignment relative to other rewards.</p>
 </li>
 </ol>
 <h4 id="why-its-important-1"><a class="header" href="#why-its-important-1"><strong>Why It’s Important</strong></a></h4>
@@ -258,9 +240,8 @@ current_distance = euclidean_distance(
 <h4 id="how-it-works-2"><a class="header" href="#how-it-works-2"><strong>How It Works</strong></a></h4>
 <ol>
 <li>
-<p><strong>Extract Heading History</strong>:</p>
-<ul>
-<li>The function retrieves a history of the aircraft’s headings from its black box logs:
+<p><strong>Extract Heading History</strong>:
+The function retrieves a history of the aircraft’s headings from its black box logs:</p>
 <pre><code class="language-python">headings = [
     log_entry["heading"]
     for log_entry in aircraft.black_box._logs
@@ -268,27 +249,19 @@ current_distance = euclidean_distance(
 ]
 </code></pre>
 </li>
-</ul>
-</li>
 <li>
-<p><strong>Calculate Smoothness</strong>:</p>
-<ul>
-<li>The mean squared change in heading is calculated to quantify smoothness:
+<p><strong>Calculate Smoothness</strong>:
+The mean squared change in heading is calculated to quantify smoothness:</p>
 <pre><code class="language-python">differences = np.abs(np.diff(headings))
 differences = np.where(differences &gt; 180, 360 - differences, differences)
 mean_squared_change = np.mean(differences**2)
 </code></pre>
 </li>
-</ul>
-</li>
 <li>
-<p><strong>Compute Penalty</strong>:</p>
-<ul>
-<li>The penalty is proportional to the mean squared change:
+<p><strong>Compute Penalty</strong>:
+The penalty is proportional to the mean squared change:</p>
 <pre><code class="language-python">heading_smoothness_penalty = -mean_squared_change * scaling_factors.get("heading_smoothness")
 </code></pre>
-</li>
-</ul>
 </li>
 </ol>
 <h4 id="why-its-important-2"><a class="header" href="#why-its-important-2"><strong>Why It’s Important</strong></a></h4>
@@ -303,19 +276,14 @@ mean_squared_change = np.mean(differences**2)
 <h4 id="how-it-works-3"><a class="header" href="#how-it-works-3"><strong>How It Works</strong></a></h4>
 <ol>
 <li>
-<p><strong>Calculate Exponential Reward</strong>:</p>
-<ul>
-<li>The reward exponentially increases as the distance to the goal decreases:
+<p><strong>Calculate Exponential Reward</strong>:
+The reward exponentially increases as the distance to the goal decreases:</p>
 <pre><code class="language-python">exponential_reward = np.exp(-current_distance) * scaling_factors.get("exp_progress")
 </code></pre>
 </li>
-</ul>
-</li>
 <li>
-<p><strong>Incentivizing the Goal</strong>:</p>
-<ul>
-<li>This component makes it highly rewarding for the aircraft to approach the target quickly.</li>
-</ul>
+<p><strong>Incentivizing the Goal</strong>:
+This component makes it highly rewarding for the aircraft to approach the target quickly.</p>
 </li>
 </ol>
 <h4 id="why-its-important-3"><a class="header" href="#why-its-important-3"><strong>Why It’s Important</strong></a></h4>

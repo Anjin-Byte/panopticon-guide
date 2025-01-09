@@ -14,7 +14,7 @@ This reward encourages the aircraft to minimize its distance to the target. The 
 
 #### **How It Works**
 1. **Calculate Distance**:
-   - The function calculates the Euclidean distance from the aircraft’s previous position to the goal (`previous_distance`) and from its current position to the goal (`current_distance`).
+   The function calculates the Euclidean distance from the aircraft’s previous position to the goal (`previous_distance`) and from its current position to the goal (`current_distance`).
 
    ```python
    previous_distance = euclidean_distance(
@@ -26,16 +26,16 @@ This reward encourages the aircraft to minimize its distance to the target. The 
    ```
 
 2. **Compute Reward**:
-   - The difference between the previous and current distances determines progress:
+   The difference between the previous and current distances determines progress:
      ```python
      distance_progress_reward = scaling_factors.get("distance") * (
          previous_distance - current_distance
      )
      ```
-   - If the aircraft moves closer to the goal, the reward is positive. Moving away results in a negative reward.
+   If the aircraft moves closer to the goal, the reward is positive. Moving away results in a negative reward.
 
 3. **Scaling Factor**:
-   - A scaling factor (`scaling_factors.get("distance")`) adjusts the reward’s magnitude to influence the agent's learning.
+   A scaling factor (`scaling_factors.get("distance")`) adjusts the reward’s magnitude to influence the agent's learning.
 
 #### **Why It’s Important**
 - **Encourages Goal-Oriented Behavior**: Guides the agent to prioritize moving toward the target.
@@ -50,7 +50,7 @@ This reward ensures the aircraft aligns its heading with the optimal trajectory 
 
 #### **How It Works**
 1. **Calculate Target Heading**:
-   - The target heading is the angle between the aircraft’s current position and the goal:
+   The target heading is the angle between the aircraft’s current position and the goal:
      ```python
      target_heading = get_bearing_between_two_points(
          aircraft.latitude, aircraft.longitude, goal_coordinates[0], goal_coordinates[1]
@@ -58,20 +58,20 @@ This reward ensures the aircraft aligns its heading with the optimal trajectory 
      ```
 
 2. **Calculate Heading Difference**:
-   - The difference between the aircraft’s current heading (`previous_heading`) and the target heading is normalized to a range of 0°–180°:
+   The difference between the aircraft’s current heading (`previous_heading`) and the target heading is normalized to a range of 0°–180°:
      ```python
      heading_difference = abs((previous_heading - target_heading + 180) % 360 - 180)
      ```
 
 3. **Compute Reward**:
-   - The reward decreases linearly with the heading difference:
+   The reward decreases linearly with the heading difference:
      ```python
      heading_alignment_reward = (1 - heading_difference / 180.0) * scaling_factors.get("heading_align")
      ```
-   - A perfectly aligned heading yields the maximum reward, while a completely opposite heading (180° off) results in no reward.
+   A perfectly aligned heading yields the maximum reward, while a completely opposite heading (180° off) results in no reward.
 
 4. **Scaling Factor**:
-   - A scaling factor (`scaling_factors.get("heading_align")`) adjusts the importance of alignment relative to other rewards.
+   A scaling factor (`scaling_factors.get("heading_align")`) adjusts the importance of alignment relative to other rewards.
 
 #### **Why It’s Important**
 - **Promotes Efficiency**: Aligning with the optimal trajectory minimizes travel time and fuel consumption.
@@ -86,7 +86,7 @@ This component penalizes erratic heading changes, encouraging the agent to maint
 
 #### **How It Works**
 1. **Extract Heading History**:
-   - The function retrieves a history of the aircraft’s headings from its black box logs:
+   The function retrieves a history of the aircraft’s headings from its black box logs:
      ```python
      headings = [
          log_entry["heading"]
@@ -96,7 +96,7 @@ This component penalizes erratic heading changes, encouraging the agent to maint
      ```
 
 2. **Calculate Smoothness**:
-   - The mean squared change in heading is calculated to quantify smoothness:
+   The mean squared change in heading is calculated to quantify smoothness:
      ```python
      differences = np.abs(np.diff(headings))
      differences = np.where(differences > 180, 360 - differences, differences)
@@ -104,7 +104,7 @@ This component penalizes erratic heading changes, encouraging the agent to maint
      ```
 
 3. **Compute Penalty**:
-   - The penalty is proportional to the mean squared change:
+   The penalty is proportional to the mean squared change:
      ```python
      heading_smoothness_penalty = -mean_squared_change * scaling_factors.get("heading_smoothness")
      ```
@@ -122,13 +122,13 @@ This optional reward component emphasizes proximity to the goal, providing highe
 
 #### **How It Works**
 1. **Calculate Exponential Reward**:
-   - The reward exponentially increases as the distance to the goal decreases:
+   The reward exponentially increases as the distance to the goal decreases:
      ```python
      exponential_reward = np.exp(-current_distance) * scaling_factors.get("exp_progress")
      ```
 
 2. **Incentivizing the Goal**:
-   - This component makes it highly rewarding for the aircraft to approach the target quickly.
+   This component makes it highly rewarding for the aircraft to approach the target quickly.
 
 #### **Why It’s Important**
 - **Fine-Tuned Precision**: Adds another layer of guidance near the goal.
