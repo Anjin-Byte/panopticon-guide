@@ -7,8 +7,6 @@ The reward function is the heart of reinforcement learning. It translates the re
 2. Align its heading with the optimal trajectory toward the goal.
 3. Penalize erratic heading changes to ensure smooth movement.
 
-Let’s break it down component by component.
-
 ---
 
 ### **1. Distance Progress Reward**
@@ -159,21 +157,6 @@ Each component is scaled to balance its influence:
 
 ---
 
-### **6. Debugging the Reward Function**
-
-To ensure the reward function behaves as expected, use `DEBUG` mode to print detailed logs:
-```python
-if DEBUG:
-    print(f"Reward Breakdown |-------------------------------------------")
-    print(f"  Distance Progress Reward: {distance_progress_reward}")
-    print(f"  Heading Alignment Reward: {heading_alignment_reward}")
-    print(f"  Heading Smoothness Penalty: {heading_smoothness_penalty}")
-    print(f"  Total Reward: {total_reward}")
-    print(f"------------------------------------------------------------")
-```
-
----
-
 ### **7. Why This Reward Function is Effective**
 
 1. **Multi-Faceted Guidance**:
@@ -189,5 +172,3 @@ if DEBUG:
    - Breaks the reward into understandable parts, making it easier to identify and fix issues.
 
 ---
-
-By designing a thoughtful and detailed reward function, the agent learns behaviors that are efficient, realistic, and aligned with the simulation's objectives. If you'd like to explore additional reward components or refine the function further, let me know!
