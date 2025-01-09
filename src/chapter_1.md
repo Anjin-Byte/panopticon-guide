@@ -1,5 +1,3 @@
-# Chapter 1
-
 ### **Detailed Explanation of the Reward Function**
 
 The reward function is the heart of reinforcement learning. It translates the results of an agent's actions into numerical feedback that the agent uses to learn. In this scenario, the reward function is designed to:

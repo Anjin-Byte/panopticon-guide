@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Chapter 1 - Training agent for Panopticon</title>
+        <title>Reward Function - Training agent for Panopticon</title>
 
 
         <!-- Custom HTML head -->
@@ -152,15 +152,13 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="chapter-1"><a class="header" href="#chapter-1">Chapter 1</a></h1>
-<h3 id="detailed-explanation-of-the-reward-function"><a class="header" href="#detailed-explanation-of-the-reward-function"><strong>Detailed Explanation of the Reward Function</strong></a></h3>
+                        <h3 id="detailed-explanation-of-the-reward-function"><a class="header" href="#detailed-explanation-of-the-reward-function"><strong>Detailed Explanation of the Reward Function</strong></a></h3>
 <p>The reward function is the heart of reinforcement learning. It translates the results of an agent's actions into numerical feedback that the agent uses to learn. In this scenario, the reward function is designed to:</p>
 <ol>
 <li>Encourage the aircraft to reduce its distance to the target location.</li>
 <li>Align its heading with the optimal trajectory toward the goal.</li>
 <li>Penalize erratic heading changes to ensure smooth movement.</li>
 </ol>
-<p>Let’s break it down component by component.</p>
 <hr />
 <h3 id="1-distance-progress-reward"><a class="header" href="#1-distance-progress-reward"><strong>1. Distance Progress Reward</strong></a></h3>
 <h4 id="purpose"><a class="header" href="#purpose"><strong>Purpose</strong></a></h4>
@@ -341,17 +339,6 @@ mean_squared_change = np.mean(differences**2)
 <li><strong>Smoothness</strong>: Discourages abrupt or erratic movements.</li>
 </ul>
 <hr />
-<h3 id="6-debugging-the-reward-function"><a class="header" href="#6-debugging-the-reward-function"><strong>6. Debugging the Reward Function</strong></a></h3>
-<p>To ensure the reward function behaves as expected, use <code>DEBUG</code> mode to print detailed logs:</p>
-<pre><code class="language-python">if DEBUG:
-    print(f"Reward Breakdown |-------------------------------------------")
-    print(f"  Distance Progress Reward: {distance_progress_reward}")
-    print(f"  Heading Alignment Reward: {heading_alignment_reward}")
-    print(f"  Heading Smoothness Penalty: {heading_smoothness_penalty}")
-    print(f"  Total Reward: {total_reward}")
-    print(f"------------------------------------------------------------")
-</code></pre>
-<hr />
 <h3 id="7-why-this-reward-function-is-effective"><a class="header" href="#7-why-this-reward-function-is-effective"><strong>7. Why This Reward Function is Effective</strong></a></h3>
 <ol>
 <li>
@@ -380,7 +367,6 @@ mean_squared_change = np.mean(differences**2)
 </li>
 </ol>
 <hr />
-<p>By designing a thoughtful and detailed reward function, the agent learns behaviors that are efficient, realistic, and aligned with the simulation's objectives. If you'd like to explore additional reward components or refine the function further, let me know!</p>
 
                     </main>
 
