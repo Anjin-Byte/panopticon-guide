@@ -2,7 +2,29 @@
 
 To effectively use the **BLADE** environment with OpenAI Gymnasium, it’s essential to understand its architecture and how it bridges the simulation features of Panopticon with the modular reinforcement learning ecosystem of Gym. Here’s a structured breakdown:
 
----
+### **Basic Training Loop**
+```plaintext
++--------------------------------+
+|          Reinforcement         |
+|          Learning Agent        |
++--------------------------------+
+         |           ^
+ Actions |           | Observations, Rewards
+         v           |
++--------------------------------+
+|         BLADE Environment       |
+| (Gym-compatible Interface)      |
++--------------------------------+
+         |           ^
+ Commands|           | Filtered Observations
+         v           |
++--------------------------------+
+|        Game (Simulation Core)   |
+|  - Scenario                     |
+|  - Entities (Aircraft, Ships)   |
+|  - Missions (Patrol, Strike)    |
++--------------------------------+
+```
 
 ### **BLADE Layout**
 
@@ -20,8 +42,6 @@ The BLADE environment acts as a wrapper that integrates the simulation capabilit
 3. **Utility Modules**
    - Constants and utility functions to calculate distances, headings, and other spatial dynamics.
    - Filtering and logging mechanisms to extract or record meaningful data.
-
----
 
 ### **Interface with OpenAI Gymnasium**
 
@@ -58,8 +78,6 @@ BLADE leverages the Gymnasium API to create a reinforcement learning environment
    - **Observation Space**: Describes the format and limits of data returned to the agent, e.g., aircraft latitude and longitude.
    - **Action Space**: Specifies the range and type of actions the agent can take, e.g., target coordinates for a movement command.
 
----
-
 ### **How It All Fits Together**
 When you combine BLADE with Gymnasium, you get an environment that acts as a bridge between the high-fidelity simulation of Panopticon and the algorithms provided by reinforcement learning libraries like Stable-Baselines3. Here's the flow:
 
@@ -67,33 +85,3 @@ When you combine BLADE with Gymnasium, you get an environment that acts as a bri
 2. Actions from the agent are transformed and applied to the simulation (`Game.step()`).
 3. The simulation updates its state, calculates rewards, and checks for termination.
 4. Filtered observations and rewards are returned to the agent, closing the loop.
-
----
-
-### **Basic Training Loop**
-```plaintext
-+--------------------------------+
-|          Reinforcement         |
-|          Learning Agent        |
-+--------------------------------+
-         |           ^
- Actions |           | Observations, Rewards
-         v           |
-+--------------------------------+
-|         BLADE Environment       |
-| (Gym-compatible Interface)      |
-+--------------------------------+
-         |           ^
- Commands|           | Filtered Observations
-         v           |
-+--------------------------------+
-|        Game (Simulation Core)   |
-|  - Scenario                     |
-|  - Entities (Aircraft, Ships)   |
-|  - Missions (Patrol, Strike)    |
-+--------------------------------+
-```
-
----
-
-By combining Panopticon’s robust simulation features with the modularity of Gym, BLADE opens the door to training intelligent agents for complex scenarios in a structured, scalable way.

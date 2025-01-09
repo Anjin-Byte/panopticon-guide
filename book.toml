@@ -3,4 +3,4 @@ authors = ["anjin-byte"]
 language = "en"
 multilingual = false
 src = "src"
-title = "Training agent for Panopticon"
+title = "Training Agents for Panopticon"
