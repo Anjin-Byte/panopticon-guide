@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - Training agent for Panopticon</title>
+        <title>Understanding the BLADE Ecosystem - Training agent for Panopticon</title>
 
 
         <!-- Custom HTML head -->
@@ -152,17 +152,148 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h3 id="introduction"><a class="header" href="#introduction"><strong>Introduction</strong></a></h3>
-<p>Imagine orchestrating complex scenarios where aircraft, ships, and facilities interact in dynamic and unpredictable environments. What if you could build an intelligent agent capable of navigating these challenges, learning strategies, and optimizing performance in real time? Enter Panopticon, a cutting-edge simulation platform that fuses realism with the flexibility of OpenAI Gym.</p>
-<p>In this guide, we'll show you how to unlock the full potential of Panopticon by leveraging its seamless integration with reinforcement learning frameworks like Stable-Baselines3. You'll learn how to create environments, design observation and action spaces, and train agents to master complex scenarios.</p>
-<p>Let’s dive in and start building a simple aircraft agent!</p>
+                        <h3 id="layout-of-blade-and-its-interface-with-openai-gymnasium"><a class="header" href="#layout-of-blade-and-its-interface-with-openai-gymnasium"><strong>Layout of BLADE and Its Interface with OpenAI Gymnasium</strong></a></h3>
+<p>To effectively use the <strong>BLADE</strong> environment with OpenAI Gymnasium, it’s essential to understand its architecture and how it bridges the simulation features of Panopticon with the modular reinforcement learning ecosystem of Gym. Here’s a structured breakdown:</p>
+<hr />
+<h3 id="blade-layout"><a class="header" href="#blade-layout"><strong>BLADE Layout</strong></a></h3>
+<p>The BLADE environment acts as a wrapper that integrates the simulation capabilities of the Panopticon system with the reinforcement learning framework. Here’s how its key components are organized:</p>
+<ol>
+<li>
+<p><strong>Simulation Backbone</strong></p>
+<ul>
+<li><strong>Game</strong>: Manages the current state of the simulation, including entities (e.g., aircraft, ships, facilities) and missions.
+<ul>
+<li>Provides the <code>step</code> method, which processes actions, updates the simulation state, and returns observations, rewards, and termination conditions.</li>
+</ul>
+</li>
+<li><strong>Scenario</strong>: Represents the configuration of a specific simulation, including the entities, sides, and missions involved.</li>
+</ul>
+</li>
+<li>
+<p><strong>Entities and Missions</strong></p>
+<ul>
+<li><strong>Entities</strong>: Aircraft, ships, facilities, and airbases with customizable properties like position, speed, and weapons.</li>
+<li><strong>Missions</strong>: Goals assigned to entities, such as patrols or strikes, which guide their behavior within the scenario.</li>
+</ul>
+</li>
+<li>
+<p><strong>Utility Modules</strong></p>
+<ul>
+<li>Constants and utility functions to calculate distances, headings, and other spatial dynamics.</li>
+<li>Filtering and logging mechanisms to extract or record meaningful data.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h3 id="interface-with-openai-gymnasium"><a class="header" href="#interface-with-openai-gymnasium"><strong>Interface with OpenAI Gymnasium</strong></a></h3>
+<p>BLADE leverages the Gymnasium API to create a reinforcement learning environment. Here's how it connects the dots:</p>
+<ol>
+<li>
+<p><strong>Environment Initialization</strong></p>
+<ul>
+<li>The <code>BLADE</code> class inherits from <code>gym.Env</code> and serves as the Gym-compatible environment.</li>
+<li>During initialization:
+<ul>
+<li>The <code>Game</code> object is provided to manage the simulation.</li>
+<li>Observation and action spaces are defined, either with defaults or user customization.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Key Gym API Methods</strong></p>
+<ul>
+<li><strong><code>reset()</code></strong>:
+<ul>
+<li>Resets the simulation to its initial state using the <code>Game</code> class.</li>
+<li>Returns an initial observation and optional metadata.</li>
+</ul>
+</li>
+<li><strong><code>step(action)</code></strong>:
+<ul>
+<li>Accepts an action, transforms it for the simulation, and applies it to the <code>Game</code> object.</li>
+<li>Updates the simulation state and retrieves:
+<ul>
+<li>The next observation (<code>observation_filter_fnc</code> is applied if defined).</li>
+<li>A reward value (<code>reward_filter_fnc</code>).</li>
+<li>Termination status (<code>termination_filter_fnc</code>).</li>
+<li>Additional info for debugging or diagnostics.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong><code>render()</code></strong> (Optional):
+<ul>
+<li>Provides visual feedback, useful for debugging or demonstrations.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Customizable Interfaces</strong></p>
+<ul>
+<li><strong>Action Transformation</strong>: <code>action_transform_fnc</code> allows the user to map RL agent outputs (actions) into commands understood by the simulation, such as moving an aircraft.</li>
+<li><strong>Observation Filtering</strong>: <code>observation_filter_fnc</code> tailors the simulation state into meaningful observations for the RL agent, like the position of an aircraft or proximity to threats.</li>
+<li><strong>Reward and Termination</strong>:
+<ul>
+<li><code>reward_filter_fnc</code>: Defines how agent performance is evaluated.</li>
+<li><code>termination_filter_fnc</code>: Sets conditions for ending an episode.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Gym Spaces</strong></p>
+<ul>
+<li><strong>Observation Space</strong>: Describes the format and limits of data returned to the agent, e.g., aircraft latitude and longitude.</li>
+<li><strong>Action Space</strong>: Specifies the range and type of actions the agent can take, e.g., target coordinates for a movement command.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h3 id="how-it-all-fits-together"><a class="header" href="#how-it-all-fits-together"><strong>How It All Fits Together</strong></a></h3>
+<p>When you combine BLADE with Gymnasium, you get an environment that acts as a bridge between the high-fidelity simulation of Panopticon and the algorithms provided by reinforcement learning libraries like Stable-Baselines3. Here's the flow:</p>
+<ol>
+<li>The agent interacts with the BLADE environment via the Gymnasium API.</li>
+<li>Actions from the agent are transformed and applied to the simulation (<code>Game.step()</code>).</li>
+<li>The simulation updates its state, calculates rewards, and checks for termination.</li>
+<li>Filtered observations and rewards are returned to the agent, closing the loop.</li>
+</ol>
+<hr />
+<h3 id="basic-training-loop"><a class="header" href="#basic-training-loop"><strong>Basic Training Loop</strong></a></h3>
+<pre><code class="language-plaintext">+--------------------------------+
+|          Reinforcement         |
+|          Learning Agent        |
++--------------------------------+
+         |           ^
+ Actions |           | Observations, Rewards
+         v           |
++--------------------------------+
+|         BLADE Environment       |
+| (Gym-compatible Interface)      |
++--------------------------------+
+         |           ^
+ Commands|           | Filtered Observations
+         v           |
++--------------------------------+
+|        Game (Simulation Core)   |
+|  - Scenario                     |
+|  - Entities (Aircraft, Ships)   |
+|  - Missions (Patrol, Strike)    |
++--------------------------------+
+</code></pre>
+<hr />
+<p>By combining Panopticon’s robust simulation features with the modularity of Gym, BLADE opens the door to training intelligent agents for complex scenarios in a structured, scalable way.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
 
-                            <a rel="next prefetch" href="chapter_0.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="chapter_1.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -172,8 +303,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
-                    <a rel="next prefetch" href="chapter_0.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="chapter_1.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
