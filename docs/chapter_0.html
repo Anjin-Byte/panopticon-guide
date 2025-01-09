@@ -152,8 +152,35 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h3 id="layout-of-blade-and-its-interface-with-openai-gymnasium"><a class="header" href="#layout-of-blade-and-its-interface-with-openai-gymnasium"><strong>Layout of BLADE and Its Interface with OpenAI Gymnasium</strong></a></h3>
+                        <h3 id="layout-of-blade-and-its-interface-with-openai-gymnasium"><a class="header" href="#layout-of-blade-and-its-interface-with-openai-gymnasium"><em>Layout of BLADE and Its Interface with OpenAI Gymnasium</em></a></h3>
 <p>To effectively use the <strong>BLADE</strong> environment with OpenAI Gymnasium, it’s essential to understand its architecture and how it bridges the simulation features of Panopticon with the modular reinforcement learning ecosystem of Gym. Here’s a structured breakdown:</p>
+<pre class="mermaid">%% Class Diagram
+classDiagram
+    class Game {
+        - current_scenario: Scenario
+        - initial_scenario: Scenario
+        - current_side_name: str
+        + reset(): void
+        + step(action: list | str): tuple
+    }
+
+    class Scenario {
+        - id: str
+        - name: str
+        - sides: list[Side]
+    }
+
+    class BLADE {
+        - game: Game
+        - observation_space: gymnasium.Space
+        - action_space: gymnasium.Space
+        + reset(): tuple
+        + step(action): tuple
+    }
+
+    Game --&gt; Scenario : &quot;manages&quot;
+    BLADE --&gt; Game : &quot;wraps&quot;
+</pre>
 <h3 id="basic-training-loop"><a class="header" href="#basic-training-loop"><strong>Basic Training Loop</strong></a></h3>
 <pre><code class="language-plaintext">+--------------------------------+
 |          Reinforcement         |
@@ -163,18 +190,49 @@
  Actions |           | Observations, Rewards
          v           |
 +--------------------------------+
-|         BLADE Environment       |
-| (Gym-compatible Interface)      |
+|         BLADE Environment      |
+| (Gym-compatible Interface)     |
 +--------------------------------+
          |           ^
  Commands|           | Filtered Observations
          v           |
 +--------------------------------+
-|        Game (Simulation Core)   |
-|  - Scenario                     |
-|  - Entities (Aircraft, Ships)   |
-|  - Missions (Patrol, Strike)    |
+|        Game (Simulation Core)  |
+|  - Scenario                    |
+|  - Entities (Aircraft, Ships)  |
+|  - Missions (Patrol, Strike)   |
 +--------------------------------+
+</code></pre>
+<pre><code class="language-plaintext">+------------------------+        +---------------------------+
+|    Panopticon User     |        | Reinforcement Learning    |
+| - Configures Scenarios |        | Framework (e.g., Gym)     |
+| - Defines Objectives   | &lt;----&gt; | - Sends Actions           |
+| - Monitors Results     |        | - Receives Observations   |
++------------------------+        +---------------------------+
+           |                                     ^
+           v                                     |
++---------------------------------------------------+
+|                   BLADE Environment               |
+| - Provides Gym Interface                          |
+| - Customizable Actions, Observations, Rewards     |
+| - Connects to the Game                            |
++---------------------------------------------------+
+           |
+           v
++-------------------------+   Manages   +---------------------+
+|         Game            | &lt;--------&gt; |     Scenario         |
+| - Updates Simulation    |            | - Entities           |
+| - Processes Actions     |            | - Missions           |
+| - Computes Rewards      |            | - Time Progression   |
++-------------------------+             +---------------------+
+           |
+           v
++---------------------------------------------------+
+|               Simulation Entities                |
+| - Aircraft         - Ships                       |
+| - Facilities       - Weapons                     |
+| - Reference Points - Missions (Patrol, Strike)   |
++---------------------------------------------------+
 </code></pre>
 <h3 id="blade-layout"><a class="header" href="#blade-layout"><strong>BLADE Layout</strong></a></h3>
 <p>The BLADE environment acts as a wrapper that integrates the simulation capabilities of the Panopticon system with the reinforcement learning framework. Here’s how its key components are organized:</p>
@@ -325,6 +383,8 @@
         <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
+        <script src="mermaid.min.js"></script>
+        <script src="mermaid-init.js"></script>
 
 
     </div>

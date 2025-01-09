@@ -1,6 +1,35 @@
-### **Layout of BLADE and Its Interface with OpenAI Gymnasium**
+### *Layout of BLADE and Its Interface with OpenAI Gymnasium*
 
 To effectively use the **BLADE** environment with OpenAI Gymnasium, it’s essential to understand its architecture and how it bridges the simulation features of Panopticon with the modular reinforcement learning ecosystem of Gym. Here’s a structured breakdown:
+
+```mermaid
+%% Class Diagram
+classDiagram
+    class Game {
+        - current_scenario: Scenario
+        - initial_scenario: Scenario
+        - current_side_name: str
+        + reset(): void
+        + step(action: list | str): tuple
+    }
+
+    class Scenario {
+        - id: str
+        - name: str
+        - sides: list[Side]
+    }
+
+    class BLADE {
+        - game: Game
+        - observation_space: gymnasium.Space
+        - action_space: gymnasium.Space
+        + reset(): tuple
+        + step(action): tuple
+    }
+
+    Game --> Scenario : "manages"
+    BLADE --> Game : "wraps"
+```
 
 ### **Basic Training Loop**
 ```plaintext
@@ -12,18 +41,51 @@ To effectively use the **BLADE** environment with OpenAI Gymnasium, it’s essen
  Actions |           | Observations, Rewards
          v           |
 +--------------------------------+
-|         BLADE Environment       |
-| (Gym-compatible Interface)      |
+|         BLADE Environment      |
+| (Gym-compatible Interface)     |
 +--------------------------------+
          |           ^
  Commands|           | Filtered Observations
          v           |
 +--------------------------------+
-|        Game (Simulation Core)   |
-|  - Scenario                     |
-|  - Entities (Aircraft, Ships)   |
-|  - Missions (Patrol, Strike)    |
+|        Game (Simulation Core)  |
+|  - Scenario                    |
+|  - Entities (Aircraft, Ships)  |
+|  - Missions (Patrol, Strike)   |
 +--------------------------------+
+```
+
+```plaintext
++------------------------+        +---------------------------+
+|    Panopticon User     |        | Reinforcement Learning    |
+| - Configures Scenarios |        | Framework (e.g., Gym)     |
+| - Defines Objectives   | <----> | - Sends Actions           |
+| - Monitors Results     |        | - Receives Observations   |
++------------------------+        +---------------------------+
+           |                                     ^
+           v                                     |
++---------------------------------------------------+
+|                   BLADE Environment               |
+| - Provides Gym Interface                          |
+| - Customizable Actions, Observations, Rewards     |
+| - Connects to the Game                            |
++---------------------------------------------------+
+           |
+           v
++-------------------------+   Manages   +---------------------+
+|         Game            | <--------> |     Scenario         |
+| - Updates Simulation    |            | - Entities           |
+| - Processes Actions     |            | - Missions           |
+| - Computes Rewards      |            | - Time Progression   |
++-------------------------+             +---------------------+
+           |
+           v
++---------------------------------------------------+
+|               Simulation Entities                |
+| - Aircraft         - Ships                       |
+| - Facilities       - Weapons                     |
+| - Reference Points - Missions (Patrol, Strike)   |
++---------------------------------------------------+
 ```
 
 ### **BLADE Layout**

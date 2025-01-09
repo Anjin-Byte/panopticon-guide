@@ -157,8 +157,35 @@
 <p>Imagine orchestrating complex scenarios where aircraft, ships, and facilities interact in dynamic and unpredictable environments. What if you could build an intelligent agent capable of navigating these challenges, learning strategies, and optimizing performance in real time? Enter Panopticon, a cutting-edge simulation platform that fuses realism with the flexibility of OpenAI Gym.</p>
 <p>In this guide, we'll show you how to unlock the full potential of Panopticon by leveraging its seamless integration with reinforcement learning frameworks like Stable-Baselines3. You'll learn how to create environments, design observation and action spaces, and train agents to master complex scenarios.</p>
 <p>Let’s dive in and start building a simple aircraft agent!</p>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="layout-of-blade-and-its-interface-with-openai-gymnasium"><a class="header" href="#layout-of-blade-and-its-interface-with-openai-gymnasium"><strong>Layout of BLADE and Its Interface with OpenAI Gymnasium</strong></a></h3>
+<div style="break-before: page; page-break-before: always;"></div><h3 id="layout-of-blade-and-its-interface-with-openai-gymnasium"><a class="header" href="#layout-of-blade-and-its-interface-with-openai-gymnasium"><em>Layout of BLADE and Its Interface with OpenAI Gymnasium</em></a></h3>
 <p>To effectively use the <strong>BLADE</strong> environment with OpenAI Gymnasium, it’s essential to understand its architecture and how it bridges the simulation features of Panopticon with the modular reinforcement learning ecosystem of Gym. Here’s a structured breakdown:</p>
+<pre class="mermaid">%% Class Diagram
+classDiagram
+    class Game {
+        - current_scenario: Scenario
+        - initial_scenario: Scenario
+        - current_side_name: str
+        + reset(): void
+        + step(action: list | str): tuple
+    }
+
+    class Scenario {
+        - id: str
+        - name: str
+        - sides: list[Side]
+    }
+
+    class BLADE {
+        - game: Game
+        - observation_space: gymnasium.Space
+        - action_space: gymnasium.Space
+        + reset(): tuple
+        + step(action): tuple
+    }
+
+    Game --&gt; Scenario : &quot;manages&quot;
+    BLADE --&gt; Game : &quot;wraps&quot;
+</pre>
 <h3 id="basic-training-loop"><a class="header" href="#basic-training-loop"><strong>Basic Training Loop</strong></a></h3>
 <pre><code class="language-plaintext">+--------------------------------+
 |          Reinforcement         |
@@ -168,18 +195,49 @@
  Actions |           | Observations, Rewards
          v           |
 +--------------------------------+
-|         BLADE Environment       |
-| (Gym-compatible Interface)      |
+|         BLADE Environment      |
+| (Gym-compatible Interface)     |
 +--------------------------------+
          |           ^
  Commands|           | Filtered Observations
          v           |
 +--------------------------------+
-|        Game (Simulation Core)   |
-|  - Scenario                     |
-|  - Entities (Aircraft, Ships)   |
-|  - Missions (Patrol, Strike)    |
+|        Game (Simulation Core)  |
+|  - Scenario                    |
+|  - Entities (Aircraft, Ships)  |
+|  - Missions (Patrol, Strike)   |
 +--------------------------------+
+</code></pre>
+<pre><code class="language-plaintext">+------------------------+        +---------------------------+
+|    Panopticon User     |        | Reinforcement Learning    |
+| - Configures Scenarios |        | Framework (e.g., Gym)     |
+| - Defines Objectives   | &lt;----&gt; | - Sends Actions           |
+| - Monitors Results     |        | - Receives Observations   |
++------------------------+        +---------------------------+
+           |                                     ^
+           v                                     |
++---------------------------------------------------+
+|                   BLADE Environment               |
+| - Provides Gym Interface                          |
+| - Customizable Actions, Observations, Rewards     |
+| - Connects to the Game                            |
++---------------------------------------------------+
+           |
+           v
++-------------------------+   Manages   +---------------------+
+|         Game            | &lt;--------&gt; |     Scenario         |
+| - Updates Simulation    |            | - Entities           |
+| - Processes Actions     |            | - Missions           |
+| - Computes Rewards      |            | - Time Progression   |
++-------------------------+             +---------------------+
+           |
+           v
++---------------------------------------------------+
+|               Simulation Entities                |
+| - Aircraft         - Ships                       |
+| - Facilities       - Weapons                     |
+| - Reference Points - Missions (Patrol, Strike)   |
++---------------------------------------------------+
 </code></pre>
 <h3 id="blade-layout"><a class="header" href="#blade-layout"><strong>BLADE Layout</strong></a></h3>
 <p>The BLADE environment acts as a wrapper that integrates the simulation capabilities of the Panopticon system with the reinforcement learning framework. Here’s how its key components are organized:</p>
@@ -505,6 +563,8 @@ This component makes it highly rewarding for the aircraft to approach the target
         <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
+        <script src="mermaid.min.js"></script>
+        <script src="mermaid-init.js"></script>
 
         <script>
         window.addEventListener('load', function() {
