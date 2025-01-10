@@ -154,32 +154,34 @@
                     <main>
                         <h3 id="layout-of-blade-and-its-interface-with-openai-gymnasium"><a class="header" href="#layout-of-blade-and-its-interface-with-openai-gymnasium"><em>Layout of BLADE and Its Interface with OpenAI Gymnasium</em></a></h3>
 <p>To effectively use the <strong>BLADE</strong> environment with OpenAI Gymnasium, it’s essential to understand its architecture and how it bridges the simulation features of Panopticon with the modular reinforcement learning ecosystem of Gym. Here’s a structured breakdown:</p>
-<pre class="mermaid">%% Class Diagram
-classDiagram
-    class Game {
-        - current_scenario: Scenario
-        - initial_scenario: Scenario
-        - current_side_name: str
-        + reset(): void
-        + step(action: list | str): tuple
-    }
+<pre class="mermaid">sequenceDiagram
+    participant Train_py as train.py
+    participant Game as Game Object
+    participant Scenario as Scenario
+    participant Gym as Gym Environment
+    participant Agent as RL Agent
 
-    class Scenario {
-        - id: str
-        - name: str
-        - sides: list[Side]
-    }
+    Train_py-&gt;&gt;Game: Initialize Game with Scenario
+    Train_py-&gt;&gt;Scenario: Load Scenario from JSON
+    Train_py-&gt;&gt;Gym: Define Observation and Action Spaces
+    Train_py-&gt;&gt;Gym: Set Transformation Functions (Action, Observation, Reward, Termination)
+    Train_py-&gt;&gt;Gym: Initialize Gym Environment with Game
 
-    class BLADE {
-        - game: Game
-        - observation_space: gymnasium.Space
-        - action_space: gymnasium.Space
-        + reset(): tuple
-        + step(action): tuple
-    }
+    loop Training Loop
+        Agent-&gt;&gt;Gym: Take Action
+        Gym-&gt;&gt;Game: Transform Action to Command
+        Game-&gt;&gt;Scenario: Update Scenario State
+        Scenario-&gt;&gt;Game: Adjust Entity Positions
+        Scenario-&gt;&gt;Game: Update Fuel and Resources
+        Scenario-&gt;&gt;Game: Resolve Engagements
+        Scenario-&gt;&gt;Game: Update Mission Objectives
+        Game-&gt;&gt;Gym: Return Updated State
+        Gym-&gt;&gt;Agent: Provide Observation, Reward, and Termination Status
+    end
 
-    Game --&gt; Scenario : &quot;manages&quot;
-    BLADE --&gt; Game : &quot;wraps&quot;
+    Train_py-&gt;&gt;Agent: Evaluate Trained Agent
+    Agent-&gt;&gt;Gym: Interact with Environment for Evaluation
+    Gym-&gt;&gt;Train_py: Export Scenario State for Debugging
 </pre>
 <h3 id="basic-training-loop"><a class="header" href="#basic-training-loop"><strong>Basic Training Loop</strong></a></h3>
 <pre><code class="language-plaintext">+--------------------------------+

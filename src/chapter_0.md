@@ -3,32 +3,34 @@
 To effectively use the **BLADE** environment with OpenAI Gymnasium, it’s essential to understand its architecture and how it bridges the simulation features of Panopticon with the modular reinforcement learning ecosystem of Gym. Here’s a structured breakdown:
 
 ```mermaid
-%% Class Diagram
-classDiagram
-    class Game {
-        - current_scenario: Scenario
-        - initial_scenario: Scenario
-        - current_side_name: str
-        + reset(): void
-        + step(action: list | str): tuple
-    }
+sequenceDiagram
+    participant Train_py as train.py
+    participant Game as Game Object
+    participant Scenario as Scenario
+    participant Gym as Gym Environment
+    participant Agent as RL Agent
 
-    class Scenario {
-        - id: str
-        - name: str
-        - sides: list[Side]
-    }
+    Train_py->>Game: Initialize Game with Scenario
+    Train_py->>Scenario: Load Scenario from JSON
+    Train_py->>Gym: Define Observation and Action Spaces
+    Train_py->>Gym: Set Transformation Functions (Action, Observation, Reward, Termination)
+    Train_py->>Gym: Initialize Gym Environment with Game
 
-    class BLADE {
-        - game: Game
-        - observation_space: gymnasium.Space
-        - action_space: gymnasium.Space
-        + reset(): tuple
-        + step(action): tuple
-    }
+    loop Training Loop
+        Agent->>Gym: Take Action
+        Gym->>Game: Transform Action to Command
+        Game->>Scenario: Update Scenario State
+        Scenario->>Game: Adjust Entity Positions
+        Scenario->>Game: Update Fuel and Resources
+        Scenario->>Game: Resolve Engagements
+        Scenario->>Game: Update Mission Objectives
+        Game->>Gym: Return Updated State
+        Gym->>Agent: Provide Observation, Reward, and Termination Status
+    end
 
-    Game --> Scenario : "manages"
-    BLADE --> Game : "wraps"
+    Train_py->>Agent: Evaluate Trained Agent
+    Agent->>Gym: Interact with Environment for Evaluation
+    Gym->>Train_py: Export Scenario State for Debugging
 ```
 
 ### **Basic Training Loop**
