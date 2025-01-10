@@ -72,63 +72,6 @@ sequenceDiagram
     Game->>GymEnv: Export final scenario state to JSON
 ```
 
-### **Basic Training Loop**
-```plaintext
-+--------------------------------+
-|          Reinforcement         |
-|          Learning Agent        |
-+--------------------------------+
-         |           ^
- Actions |           | Observations, Rewards
-         v           |
-+--------------------------------+
-|         BLADE Environment      |
-| (Gym-compatible Interface)     |
-+--------------------------------+
-         |           ^
- Commands|           | Filtered Observations
-         v           |
-+--------------------------------+
-|        Game (Simulation Core)  |
-|  - Scenario                    |
-|  - Entities (Aircraft, Ships)  |
-|  - Missions (Patrol, Strike)   |
-+--------------------------------+
-```
-
-```plaintext
-+------------------------+        +---------------------------+
-|    Panopticon User     |        | Reinforcement Learning    |
-| - Configures Scenarios |        | Framework (e.g., Gym)     |
-| - Defines Objectives   | <----> | - Sends Actions           |
-| - Monitors Results     |        | - Receives Observations   |
-+------------------------+        +---------------------------+
-           |                                     ^
-           v                                     |
-+---------------------------------------------------+
-|                   BLADE Environment               |
-| - Provides Gym Interface                          |
-| - Customizable Actions, Observations, Rewards     |
-| - Connects to the Game                            |
-+---------------------------------------------------+
-           |
-           v
-+-------------------------+   Manages   +---------------------+
-|         Game            | <--------> |     Scenario         |
-| - Updates Simulation    |            | - Entities           |
-| - Processes Actions     |            | - Missions           |
-| - Computes Rewards      |            | - Time Progression   |
-+-------------------------+             +---------------------+
-           |
-           v
-+---------------------------------------------------+
-|               Simulation Entities                |
-| - Aircraft         - Ships                       |
-| - Facilities       - Weapons                     |
-| - Reference Points - Missions (Patrol, Strike)   |
-+---------------------------------------------------+
-```
-
 ### **BLADE Layout**
 
 The BLADE environment acts as a wrapper that integrates the simulation capabilities of the Panopticon system with the reinforcement learning framework. Here’s how its key components are organized:
