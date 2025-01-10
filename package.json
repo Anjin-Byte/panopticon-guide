@@ -1,0 +1,25 @@
+{
+  "name": "panopticon-guide",
+  "version": "1.0.0",
+  "description": "Let’s dive in and start building a simple aircraft agent!",
+  "main": "mermaid-init.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anjin-Byte/panopticon-guide.git"
+  },
+  "author": "Anjin-Byte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Anjin-Byte/panopticon-guide/issues"
+  },
+  "homepage": "https://github.com/Anjin-Byte/panopticon-guide#readme",
+  "dependencies": {
+    "blocks-preprocessor": "^0.0.7"
+  }
+}

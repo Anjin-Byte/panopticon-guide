@@ -9,8 +9,18 @@ title = "Training Agents for Panopticon"
 
 [preprocessor.mermaid]
 command = "mdbook-mermaid"
+[preprocessor.blocks]
+command = "node node_modules/blocks-preprocessor/dist/blocks.js"
 
 [output]
 
 [output.html]
-additional-js = ["mermaid.min.js", "mermaid-init.js"]
+additional-css = [
+    "node_modules/blocks-preprocessor/dist/mdbook-blocks/resources/bootstrap/scss/bootstrap.css",
+    "node_modules/blocks-preprocessor/dist/mdbook-blocks/resources/blocks/scss/blocks.css",
+]
+additional-js = [
+    "mermaid.min.js",
+    "mermaid-init.js",
+    "node_modules/blocks-preprocessor/dist/mdbook-blocks/resources/bootstrap/js/bootstrap.js",
+]

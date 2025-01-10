@@ -1,6 +1,6 @@
 # Summary
 
-- [Introduction](./intro.md)
+- [Introduction](./welcome.md)
 - [Understanding the BLADE Ecosystem](./chapter_0.md)
 - [Setting Up Your Environment](./chapter_1.md)
 - [Designing Observations and Actions](./chapter_2.md)

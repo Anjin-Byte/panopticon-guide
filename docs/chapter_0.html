@@ -29,6 +29,8 @@
         <link rel="stylesheet" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="node_modules/blocks-preprocessor/dist/mdbook-blocks/resources/bootstrap/scss/bootstrap.css">
+        <link rel="stylesheet" href="node_modules/blocks-preprocessor/dist/mdbook-blocks/resources/blocks/scss/blocks.css">
 
 
         <!-- Provide site root to javascript -->
@@ -183,6 +185,96 @@
     Agent-&gt;&gt;Gym: Interact with Environment for Evaluation
     Gym-&gt;&gt;Train_py: Export Scenario State for Debugging
 </pre>
+<pre class="mermaid">sequenceDiagram
+    participant RLAgent as Stable-Baselines3 Agent
+    participant GymEnv as BLADE (Gym Environment)
+    participant Game as Game Object
+    participant Scenario as Scenario Object
+
+    RLAgent-&gt;&gt;GymEnv: Initialize environment (Gym.make)
+    GymEnv-&gt;&gt;Game: Initialize Game with Scenario
+    Game-&gt;&gt;Scenario: Load scenario from JSON
+
+    RLAgent-&gt;&gt;GymEnv: Reset environment (env.reset())
+    GymEnv-&gt;&gt;Game: Reset Game state
+    Game-&gt;&gt;Scenario: Reset to initial state
+    Game-&gt;&gt;GymEnv: Return initial observation and metadata
+
+    RLAgent-&gt;&gt;GymEnv: Take action (env.step(action))
+    GymEnv-&gt;&gt;Game: Transform action (action_transform_fnc)
+    Game-&gt;&gt;Scenario: Update simulation state
+    Scenario-&gt;&gt;Game: Return updated state
+    Game-&gt;&gt;GymEnv: Return observation, reward, termination flag, and info
+    GymEnv-&gt;&gt;RLAgent: Return step data
+
+    loop Training Loop
+        RLAgent-&gt;&gt;GymEnv: Predict action using model
+        GymEnv-&gt;&gt;Game: Transform and apply action
+        Game-&gt;&gt;Scenario: Update entities and missions
+        Scenario-&gt;&gt;Game: Return simulation results
+        Game-&gt;&gt;GymEnv: Compute reward and check termination
+        GymEnv-&gt;&gt;RLAgent: Return updated state and reward
+    end
+
+    RLAgent-&gt;&gt;GymEnv: Save trained model
+    RLAgent-&gt;&gt;GymEnv: Evaluate trained agent
+    GymEnv-&gt;&gt;Game: Execute evaluation steps
+    Game-&gt;&gt;Scenario: Log evaluation results
+    Game-&gt;&gt;GymEnv: Export final scenario state to JSON
+</pre>
+<h3 id="basic-training-loop"><a class="header" href="#basic-training-loop"><strong>Basic Training Loop</strong></a></h3>
+<pre><code class="language-plaintext">+--------------------------------+
+|          Reinforcement         |
+|          Learning Agent        |
++--------------------------------+
+         |           ^
+ Actions |           | Observations, Rewards
+         v           |
++--------------------------------+
+|         BLADE Environment      |
+| (Gym-compatible Interface)     |
++--------------------------------+
+         |           ^
+ Commands|           | Filtered Observations
+         v           |
++--------------------------------+
+|        Game (Simulation Core)  |
+|  - Scenario                    |
+|  - Entities (Aircraft, Ships)  |
+|  - Missions (Patrol, Strike)   |
++--------------------------------+
+</code></pre>
+<pre><code class="language-plaintext">+------------------------+        +---------------------------+
+|    Panopticon User     |        | Reinforcement Learning    |
+| - Configures Scenarios |        | Framework (e.g., Gym)     |
+| - Defines Objectives   | &lt;----&gt; | - Sends Actions           |
+| - Monitors Results     |        | - Receives Observations   |
++------------------------+        +---------------------------+
+           |                                     ^
+           v                                     |
++---------------------------------------------------+
+|                   BLADE Environment               |
+| - Provides Gym Interface                          |
+| - Customizable Actions, Observations, Rewards     |
+| - Connects to the Game                            |
++---------------------------------------------------+
+           |
+           v
++-------------------------+   Manages   +---------------------+
+|         Game            | &lt;--------&gt; |     Scenario         |
+| - Updates Simulation    |            | - Entities           |
+| - Processes Actions     |            | - Missions           |
+| - Computes Rewards      |            | - Time Progression   |
++-------------------------+             +---------------------+
+           |
+           v
++---------------------------------------------------+
+|               Simulation Entities                |
+| - Aircraft         - Ships                       |
+| - Facilities       - Weapons                     |
+| - Reference Points - Missions (Patrol, Strike)   |
++---------------------------------------------------+
+</code></pre>
 <h3 id="blade-layout"><a class="header" href="#blade-layout"><strong>BLADE Layout</strong></a></h3>
 <p>The BLADE environment acts as a wrapper that integrates the simulation capabilities of the Panopticon system with the reinforcement learning framework. Here’s how its key components are organized:</p>
 <ol>
@@ -290,7 +382,7 @@
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="intro.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="welcome.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -304,7 +396,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="intro.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="welcome.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
@@ -334,6 +426,7 @@
         <!-- Custom JS scripts -->
         <script src="mermaid.min.js"></script>
         <script src="mermaid-init.js"></script>
+        <script src="node_modules/blocks-preprocessor/dist/mdbook-blocks/resources/bootstrap/js/bootstrap.js"></script>
 
 
     </div>

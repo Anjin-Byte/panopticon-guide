@@ -33,6 +33,102 @@ sequenceDiagram
     Gym->>Train_py: Export Scenario State for Debugging
 ```
 
+```mermaid
+sequenceDiagram
+    participant RLAgent as Stable-Baselines3 Agent
+    participant GymEnv as BLADE (Gym Environment)
+    participant Game as Game Object
+    participant Scenario as Scenario Object
+
+    RLAgent->>GymEnv: Initialize environment (Gym.make)
+    GymEnv->>Game: Initialize Game with Scenario
+    Game->>Scenario: Load scenario from JSON
+
+    RLAgent->>GymEnv: Reset environment (env.reset())
+    GymEnv->>Game: Reset Game state
+    Game->>Scenario: Reset to initial state
+    Game->>GymEnv: Return initial observation and metadata
+
+    RLAgent->>GymEnv: Take action (env.step(action))
+    GymEnv->>Game: Transform action (action_transform_fnc)
+    Game->>Scenario: Update simulation state
+    Scenario->>Game: Return updated state
+    Game->>GymEnv: Return observation, reward, termination flag, and info
+    GymEnv->>RLAgent: Return step data
+
+    loop Training Loop
+        RLAgent->>GymEnv: Predict action using model
+        GymEnv->>Game: Transform and apply action
+        Game->>Scenario: Update entities and missions
+        Scenario->>Game: Return simulation results
+        Game->>GymEnv: Compute reward and check termination
+        GymEnv->>RLAgent: Return updated state and reward
+    end
+
+    RLAgent->>GymEnv: Save trained model
+    RLAgent->>GymEnv: Evaluate trained agent
+    GymEnv->>Game: Execute evaluation steps
+    Game->>Scenario: Log evaluation results
+    Game->>GymEnv: Export final scenario state to JSON
+```
+
+### **Basic Training Loop**
+```plaintext
++--------------------------------+
+|          Reinforcement         |
+|          Learning Agent        |
++--------------------------------+
+         |           ^
+ Actions |           | Observations, Rewards
+         v           |
++--------------------------------+
+|         BLADE Environment      |
+| (Gym-compatible Interface)     |
++--------------------------------+
+         |           ^
+ Commands|           | Filtered Observations
+         v           |
++--------------------------------+
+|        Game (Simulation Core)  |
+|  - Scenario                    |
+|  - Entities (Aircraft, Ships)  |
+|  - Missions (Patrol, Strike)   |
++--------------------------------+
+```
+
+```plaintext
++------------------------+        +---------------------------+
+|    Panopticon User     |        | Reinforcement Learning    |
+| - Configures Scenarios |        | Framework (e.g., Gym)     |
+| - Defines Objectives   | <----> | - Sends Actions           |
+| - Monitors Results     |        | - Receives Observations   |
++------------------------+        +---------------------------+
+           |                                     ^
+           v                                     |
++---------------------------------------------------+
+|                   BLADE Environment               |
+| - Provides Gym Interface                          |
+| - Customizable Actions, Observations, Rewards     |
+| - Connects to the Game                            |
++---------------------------------------------------+
+           |
+           v
++-------------------------+   Manages   +---------------------+
+|         Game            | <--------> |     Scenario         |
+| - Updates Simulation    |            | - Entities           |
+| - Processes Actions     |            | - Missions           |
+| - Computes Rewards      |            | - Time Progression   |
++-------------------------+             +---------------------+
+           |
+           v
++---------------------------------------------------+
+|               Simulation Entities                |
+| - Aircraft         - Ships                       |
+| - Facilities       - Weapons                     |
+| - Reference Points - Missions (Patrol, Strike)   |
++---------------------------------------------------+
+```
+
 ### **BLADE Layout**
 
 The BLADE environment acts as a wrapper that integrates the simulation capabilities of the Panopticon system with the reinforcement learning framework. Here’s how its key components are organized:
