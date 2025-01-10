@@ -155,46 +155,41 @@
 
                 <div id="content" class="content">
                     <main>
-                        <p>Let’s dive in and start building a simple aircraft agent!</p>
-<h1 id="welcome"><a class="header" href="#welcome">Welcome</a></h1>
+                        <h1 id="welcome"><a class="header" href="#welcome">Welcome</a></h1>
 <p>Panopticon AI is a web-based software simulation platform compatible with OpenAI Gym. Our project is open source, with code available to military modeling and simulation researchers researchers. We hope to advance the state of the art in military AI research.</p>
-<p>[blocks-alert]
-icon: fa-info-circle
-content: "Panopticon is in constant development, contribute @ <a href="https://github.com/Panopticon-AI-team/panopticon/tree/main?tab=readme-ov-file#panopticon">https://github.com/Panopticon-AI-team/panopticon</a>"
-[/blocks-alert]</p>
-<p>In this guide, we'll show you how to unlock the full potential of Panopticon by leveraging its seamless integration with reinforcement learning frameworks like Stable-Baselines3. You'll learn how to create environments, design observation and action spaces, and train agents to master complex scenarios.</p>
+<div class="alert alert-primary my-4 w-100" role="alert"><div class="mr-2 fa fa-info-circle"></div>Panopticon is in constant development, contribute @ <a href="https://github.com/Panopticon-AI-team/panopticon/tree/main?tab=readme-ov-file#panopticon">https://github.com/Panopticon-AI-team/panopticon</a></div><p>In this tutorial, you'll learn how to create a custom training program for intelligent agents using Panopticon's simulation platform and OpenAI's Gymnasium framework. Inspired by the structure of train.py, this guide will take you step-by-step through setting up an environment, defining observation and action spaces, creating reward functions, and integrating with reinforcement learning libraries like Stable-Baselines3. Whether you're building a simple agent or training complex multi-entity behaviors, this tutorial equips you with the tools to design and deploy your own custom training pipeline. Let's dive in and bring your simulation to life!</p>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="layout-of-blade-and-its-interface-with-openai-gymnasium"><a class="header" href="#layout-of-blade-and-its-interface-with-openai-gymnasium"><em>Layout of BLADE and Its Interface with OpenAI Gymnasium</em></a></h3>
 <p>To effectively use the <strong>BLADE</strong> environment with OpenAI Gymnasium, it’s essential to understand its architecture and how it bridges the simulation features of Panopticon with the modular reinforcement learning ecosystem of Gym. Here’s a structured breakdown:</p>
-<pre class="mermaid">sequenceDiagram
+<pre><code class="language-mermaid">sequenceDiagram
     participant Train_py as train.py
     participant Game as Game Object
     participant Scenario as Scenario
     participant Gym as Gym Environment
     participant Agent as RL Agent
+<pre><code>Train_py-&amp;gt;&amp;gt;Game: Initialize Game with Scenario
+Train_py-&amp;gt;&amp;gt;Scenario: Load Scenario from JSON
+Train_py-&amp;gt;&amp;gt;Gym: Define Observation and Action Spaces
+Train_py-&amp;gt;&amp;gt;Gym: Set Transformation Functions (Action, Observation, Reward, Termination)
+Train_py-&amp;gt;&amp;gt;Gym: Initialize Gym Environment with Game
 
-    Train_py-&gt;&gt;Game: Initialize Game with Scenario
-    Train_py-&gt;&gt;Scenario: Load Scenario from JSON
-    Train_py-&gt;&gt;Gym: Define Observation and Action Spaces
-    Train_py-&gt;&gt;Gym: Set Transformation Functions (Action, Observation, Reward, Termination)
-    Train_py-&gt;&gt;Gym: Initialize Gym Environment with Game
+loop Training Loop
+    Agent-&amp;gt;&amp;gt;Gym: Take Action
+    Gym-&amp;gt;&amp;gt;Game: Transform Action to Command
+    Game-&amp;gt;&amp;gt;Scenario: Update Scenario State
+    Scenario-&amp;gt;&amp;gt;Game: Adjust Entity Positions
+    Scenario-&amp;gt;&amp;gt;Game: Update Fuel and Resources
+    Scenario-&amp;gt;&amp;gt;Game: Resolve Engagements
+    Scenario-&amp;gt;&amp;gt;Game: Update Mission Objectives
+    Game-&amp;gt;&amp;gt;Gym: Return Updated State
+    Gym-&amp;gt;&amp;gt;Agent: Provide Observation, Reward, and Termination Status
+end
 
-    loop Training Loop
-        Agent-&gt;&gt;Gym: Take Action
-        Gym-&gt;&gt;Game: Transform Action to Command
-        Game-&gt;&gt;Scenario: Update Scenario State
-        Scenario-&gt;&gt;Game: Adjust Entity Positions
-        Scenario-&gt;&gt;Game: Update Fuel and Resources
-        Scenario-&gt;&gt;Game: Resolve Engagements
-        Scenario-&gt;&gt;Game: Update Mission Objectives
-        Game-&gt;&gt;Gym: Return Updated State
-        Gym-&gt;&gt;Agent: Provide Observation, Reward, and Termination Status
-    end
-
-    Train_py-&gt;&gt;Agent: Evaluate Trained Agent
-    Agent-&gt;&gt;Gym: Interact with Environment for Evaluation
-    Gym-&gt;&gt;Train_py: Export Scenario State for Debugging
-</pre>
-<pre class="mermaid">sequenceDiagram
+Train_py-&amp;gt;&amp;gt;Agent: Evaluate Trained Agent
+Agent-&amp;gt;&amp;gt;Gym: Interact with Environment for Evaluation
+Gym-&amp;gt;&amp;gt;Train_py: Export Scenario State for Debugging
+</code></pre>
+<p></code></pre></p>
+<pre><code class="language-mermaid">sequenceDiagram
     participant RLAgent as Stable-Baselines3 Agent
     participant GymEnv as BLADE (Gym Environment)
     participant Game as Game Object
@@ -230,7 +225,7 @@ content: "Panopticon is in constant development, contribute @ <a href="https://g
     GymEnv-&gt;&gt;Game: Execute evaluation steps
     Game-&gt;&gt;Scenario: Log evaluation results
     Game-&gt;&gt;GymEnv: Export final scenario state to JSON
-</pre>
+</code></pre>
 <h3 id="blade-layout"><a class="header" href="#blade-layout"><strong>BLADE Layout</strong></a></h3>
 <p>The BLADE environment acts as a wrapper that integrates the simulation capabilities of the Panopticon system with the reinforcement learning framework. Here’s how its key components are organized:</p>
 <ol>
@@ -342,7 +337,7 @@ content: "Panopticon is in constant development, contribute @ <a href="https://g
 <li>Align its heading with the optimal trajectory toward the goal.</li>
 <li>Penalize erratic heading changes to ensure smooth movement.</li>
 </ol>
-<hr />
+<hr>
 <h3 id="1-distance-progress-reward"><a class="header" href="#1-distance-progress-reward"><strong>1. Distance Progress Reward</strong></a></h3>
 <h4 id="purpose"><a class="header" href="#purpose"><strong>Purpose</strong></a></h4>
 <p>This reward encourages the aircraft to minimize its distance to the target. The closer it gets to the goal, the higher the reward.</p>
@@ -362,7 +357,7 @@ current_distance = euclidean_distance(
 <li>
 <p><strong>Compute Reward</strong>:
 The difference between the previous and current distances determines progress:</p>
-<pre><code class="language-python">distance_progress_reward = scaling_factors.get("distance") * (
+<pre><code class="language-python">distance_progress_reward = scaling_factors.get(&quot;distance&quot;) * (
     previous_distance - current_distance
 )
 </code></pre>
@@ -370,7 +365,7 @@ The difference between the previous and current distances determines progress:</
 </li>
 <li>
 <p><strong>Scaling Factor</strong>:
-A scaling factor (<code>scaling_factors.get("distance")</code>) adjusts the reward’s magnitude to influence the agent's learning.</p>
+A scaling factor (<code>scaling_factors.get(&quot;distance&quot;)</code>) adjusts the reward’s magnitude to influence the agent's learning.</p>
 </li>
 </ol>
 <h4 id="why-its-important"><a class="header" href="#why-its-important"><strong>Why It’s Important</strong></a></h4>
@@ -378,7 +373,7 @@ A scaling factor (<code>scaling_factors.get("distance")</code>) adjusts the rewa
 <li><strong>Encourages Goal-Oriented Behavior</strong>: Guides the agent to prioritize moving toward the target.</li>
 <li><strong>Reward Alignment</strong>: Reflects progress in terms of simulation objectives.</li>
 </ul>
-<hr />
+<hr>
 <h3 id="2-heading-alignment-reward"><a class="header" href="#2-heading-alignment-reward"><strong>2. Heading Alignment Reward</strong></a></h3>
 <h4 id="purpose-1"><a class="header" href="#purpose-1"><strong>Purpose</strong></a></h4>
 <p>This reward ensures the aircraft aligns its heading with the optimal trajectory toward the goal. Misaligned headings waste time and fuel, so this reward encourages efficiency.</p>
@@ -401,13 +396,13 @@ The difference between the aircraft’s current heading (<code>previous_heading<
 <li>
 <p><strong>Compute Reward</strong>:
 The reward decreases linearly with the heading difference:</p>
-<pre><code class="language-python">heading_alignment_reward = (1 - heading_difference / 180.0) * scaling_factors.get("heading_align")
+<pre><code class="language-python">heading_alignment_reward = (1 - heading_difference / 180.0) * scaling_factors.get(&quot;heading_align&quot;)
 </code></pre>
 <p>A perfectly aligned heading yields the maximum reward, while a completely opposite heading (180° off) results in no reward.</p>
 </li>
 <li>
 <p><strong>Scaling Factor</strong>:
-A scaling factor (<code>scaling_factors.get("heading_align")</code>) adjusts the importance of alignment relative to other rewards.</p>
+A scaling factor (<code>scaling_factors.get(&quot;heading_align&quot;)</code>) adjusts the importance of alignment relative to other rewards.</p>
 </li>
 </ol>
 <h4 id="why-its-important-1"><a class="header" href="#why-its-important-1"><strong>Why It’s Important</strong></a></h4>
@@ -415,7 +410,7 @@ A scaling factor (<code>scaling_factors.get("heading_align")</code>) adjusts the
 <li><strong>Promotes Efficiency</strong>: Aligning with the optimal trajectory minimizes travel time and fuel consumption.</li>
 <li><strong>Prevents Erratic Behavior</strong>: Discourages the agent from taking unnecessary detours.</li>
 </ul>
-<hr />
+<hr>
 <h3 id="3-heading-smoothness-penalty"><a class="header" href="#3-heading-smoothness-penalty"><strong>3. Heading Smoothness Penalty</strong></a></h3>
 <h4 id="purpose-2"><a class="header" href="#purpose-2"><strong>Purpose</strong></a></h4>
 <p>This component penalizes erratic heading changes, encouraging the agent to maintain a smooth trajectory.</p>
@@ -425,9 +420,9 @@ A scaling factor (<code>scaling_factors.get("heading_align")</code>) adjusts the
 <p><strong>Extract Heading History</strong>:
 The function retrieves a history of the aircraft’s headings from its black box logs:</p>
 <pre><code class="language-python">headings = [
-    log_entry["heading"]
+    log_entry[&quot;heading&quot;]
     for log_entry in aircraft.black_box._logs
-    if "heading" in log_entry
+    if &quot;heading&quot; in log_entry
 ]
 </code></pre>
 </li>
@@ -442,7 +437,7 @@ mean_squared_change = np.mean(differences**2)
 <li>
 <p><strong>Compute Penalty</strong>:
 The penalty is proportional to the mean squared change:</p>
-<pre><code class="language-python">heading_smoothness_penalty = -mean_squared_change * scaling_factors.get("heading_smoothness")
+<pre><code class="language-python">heading_smoothness_penalty = -mean_squared_change * scaling_factors.get(&quot;heading_smoothness&quot;)
 </code></pre>
 </li>
 </ol>
@@ -451,7 +446,7 @@ The penalty is proportional to the mean squared change:</p>
 <li><strong>Encourages Stability</strong>: Prevents abrupt heading changes that could indicate inefficient or erratic behavior.</li>
 <li><strong>Promotes Realism</strong>: Smooth trajectories are more realistic for an aircraft.</li>
 </ul>
-<hr />
+<hr>
 <h3 id="4-exponential-reward-optional"><a class="header" href="#4-exponential-reward-optional"><strong>4. Exponential Reward (Optional)</strong></a></h3>
 <h4 id="purpose-3"><a class="header" href="#purpose-3"><strong>Purpose</strong></a></h4>
 <p>This optional reward component emphasizes proximity to the goal, providing higher rewards as the aircraft nears the target.</p>
@@ -460,7 +455,7 @@ The penalty is proportional to the mean squared change:</p>
 <li>
 <p><strong>Calculate Exponential Reward</strong>:
 The reward exponentially increases as the distance to the goal decreases:</p>
-<pre><code class="language-python">exponential_reward = np.exp(-current_distance) * scaling_factors.get("exp_progress")
+<pre><code class="language-python">exponential_reward = np.exp(-current_distance) * scaling_factors.get(&quot;exp_progress&quot;)
 </code></pre>
 </li>
 <li>
@@ -473,7 +468,7 @@ This component makes it highly rewarding for the aircraft to approach the target
 <li><strong>Fine-Tuned Precision</strong>: Adds another layer of guidance near the goal.</li>
 <li><strong>Optional Flexibility</strong>: Can be toggled on or off depending on the desired behavior.</li>
 </ul>
-<hr />
+<hr>
 <h3 id="5-combining-reward-components"><a class="header" href="#5-combining-reward-components"><strong>5. Combining Reward Components</strong></a></h3>
 <p>The total reward is a weighted sum of all components:</p>
 <pre><code class="language-python">total_reward = (
@@ -489,7 +484,7 @@ This component makes it highly rewarding for the aircraft to approach the target
 <li><strong>Alignment</strong>: Promotes heading efficiency.</li>
 <li><strong>Smoothness</strong>: Discourages abrupt or erratic movements.</li>
 </ul>
-<hr />
+<hr>
 <h3 id="7-why-this-reward-function-is-effective"><a class="header" href="#7-why-this-reward-function-is-effective"><strong>7. Why This Reward Function is Effective</strong></a></h3>
 <ol>
 <li>
@@ -517,7 +512,7 @@ This component makes it highly rewarding for the aircraft to approach the target
 </ul>
 </li>
 </ol>
-<hr />
+<hr>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="training-your-first-agent"><a class="header" href="#training-your-first-agent"><strong>Training Your First Agent</strong></a></h3>
 <div style="break-before: page; page-break-before: always;"></div><h3 id="evaluating-agent-performance"><a class="header" href="#evaluating-agent-performance"><strong>Evaluating Agent Performance</strong></a></h3>
 
