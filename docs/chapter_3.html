@@ -161,7 +161,7 @@
 <li>Align its heading with the optimal trajectory toward the goal.</li>
 <li>Penalize erratic heading changes to ensure smooth movement.</li>
 </ol>
-<hr>
+<hr />
 <h3 id="1-distance-progress-reward"><a class="header" href="#1-distance-progress-reward"><strong>1. Distance Progress Reward</strong></a></h3>
 <h4 id="purpose"><a class="header" href="#purpose"><strong>Purpose</strong></a></h4>
 <p>This reward encourages the aircraft to minimize its distance to the target. The closer it gets to the goal, the higher the reward.</p>
@@ -181,7 +181,7 @@ current_distance = euclidean_distance(
 <li>
 <p><strong>Compute Reward</strong>:
 The difference between the previous and current distances determines progress:</p>
-<pre><code class="language-python">distance_progress_reward = scaling_factors.get(&quot;distance&quot;) * (
+<pre><code class="language-python">distance_progress_reward = scaling_factors.get("distance") * (
     previous_distance - current_distance
 )
 </code></pre>
@@ -189,7 +189,7 @@ The difference between the previous and current distances determines progress:</
 </li>
 <li>
 <p><strong>Scaling Factor</strong>:
-A scaling factor (<code>scaling_factors.get(&quot;distance&quot;)</code>) adjusts the reward’s magnitude to influence the agent's learning.</p>
+A scaling factor (<code>scaling_factors.get("distance")</code>) adjusts the reward’s magnitude to influence the agent's learning.</p>
 </li>
 </ol>
 <h4 id="why-its-important"><a class="header" href="#why-its-important"><strong>Why It’s Important</strong></a></h4>
@@ -197,7 +197,7 @@ A scaling factor (<code>scaling_factors.get(&quot;distance&quot;)</code>) adjust
 <li><strong>Encourages Goal-Oriented Behavior</strong>: Guides the agent to prioritize moving toward the target.</li>
 <li><strong>Reward Alignment</strong>: Reflects progress in terms of simulation objectives.</li>
 </ul>
-<hr>
+<hr />
 <h3 id="2-heading-alignment-reward"><a class="header" href="#2-heading-alignment-reward"><strong>2. Heading Alignment Reward</strong></a></h3>
 <h4 id="purpose-1"><a class="header" href="#purpose-1"><strong>Purpose</strong></a></h4>
 <p>This reward ensures the aircraft aligns its heading with the optimal trajectory toward the goal. Misaligned headings waste time and fuel, so this reward encourages efficiency.</p>
@@ -220,13 +220,13 @@ The difference between the aircraft’s current heading (<code>previous_heading<
 <li>
 <p><strong>Compute Reward</strong>:
 The reward decreases linearly with the heading difference:</p>
-<pre><code class="language-python">heading_alignment_reward = (1 - heading_difference / 180.0) * scaling_factors.get(&quot;heading_align&quot;)
+<pre><code class="language-python">heading_alignment_reward = (1 - heading_difference / 180.0) * scaling_factors.get("heading_align")
 </code></pre>
 <p>A perfectly aligned heading yields the maximum reward, while a completely opposite heading (180° off) results in no reward.</p>
 </li>
 <li>
 <p><strong>Scaling Factor</strong>:
-A scaling factor (<code>scaling_factors.get(&quot;heading_align&quot;)</code>) adjusts the importance of alignment relative to other rewards.</p>
+A scaling factor (<code>scaling_factors.get("heading_align")</code>) adjusts the importance of alignment relative to other rewards.</p>
 </li>
 </ol>
 <h4 id="why-its-important-1"><a class="header" href="#why-its-important-1"><strong>Why It’s Important</strong></a></h4>
@@ -234,7 +234,7 @@ A scaling factor (<code>scaling_factors.get(&quot;heading_align&quot;)</code>) a
 <li><strong>Promotes Efficiency</strong>: Aligning with the optimal trajectory minimizes travel time and fuel consumption.</li>
 <li><strong>Prevents Erratic Behavior</strong>: Discourages the agent from taking unnecessary detours.</li>
 </ul>
-<hr>
+<hr />
 <h3 id="3-heading-smoothness-penalty"><a class="header" href="#3-heading-smoothness-penalty"><strong>3. Heading Smoothness Penalty</strong></a></h3>
 <h4 id="purpose-2"><a class="header" href="#purpose-2"><strong>Purpose</strong></a></h4>
 <p>This component penalizes erratic heading changes, encouraging the agent to maintain a smooth trajectory.</p>
@@ -244,9 +244,9 @@ A scaling factor (<code>scaling_factors.get(&quot;heading_align&quot;)</code>) a
 <p><strong>Extract Heading History</strong>:
 The function retrieves a history of the aircraft’s headings from its black box logs:</p>
 <pre><code class="language-python">headings = [
-    log_entry[&quot;heading&quot;]
+    log_entry["heading"]
     for log_entry in aircraft.black_box._logs
-    if &quot;heading&quot; in log_entry
+    if "heading" in log_entry
 ]
 </code></pre>
 </li>
@@ -261,7 +261,7 @@ mean_squared_change = np.mean(differences**2)
 <li>
 <p><strong>Compute Penalty</strong>:
 The penalty is proportional to the mean squared change:</p>
-<pre><code class="language-python">heading_smoothness_penalty = -mean_squared_change * scaling_factors.get(&quot;heading_smoothness&quot;)
+<pre><code class="language-python">heading_smoothness_penalty = -mean_squared_change * scaling_factors.get("heading_smoothness")
 </code></pre>
 </li>
 </ol>
@@ -270,7 +270,7 @@ The penalty is proportional to the mean squared change:</p>
 <li><strong>Encourages Stability</strong>: Prevents abrupt heading changes that could indicate inefficient or erratic behavior.</li>
 <li><strong>Promotes Realism</strong>: Smooth trajectories are more realistic for an aircraft.</li>
 </ul>
-<hr>
+<hr />
 <h3 id="4-exponential-reward-optional"><a class="header" href="#4-exponential-reward-optional"><strong>4. Exponential Reward (Optional)</strong></a></h3>
 <h4 id="purpose-3"><a class="header" href="#purpose-3"><strong>Purpose</strong></a></h4>
 <p>This optional reward component emphasizes proximity to the goal, providing higher rewards as the aircraft nears the target.</p>
@@ -279,7 +279,7 @@ The penalty is proportional to the mean squared change:</p>
 <li>
 <p><strong>Calculate Exponential Reward</strong>:
 The reward exponentially increases as the distance to the goal decreases:</p>
-<pre><code class="language-python">exponential_reward = np.exp(-current_distance) * scaling_factors.get(&quot;exp_progress&quot;)
+<pre><code class="language-python">exponential_reward = np.exp(-current_distance) * scaling_factors.get("exp_progress")
 </code></pre>
 </li>
 <li>
@@ -292,7 +292,7 @@ This component makes it highly rewarding for the aircraft to approach the target
 <li><strong>Fine-Tuned Precision</strong>: Adds another layer of guidance near the goal.</li>
 <li><strong>Optional Flexibility</strong>: Can be toggled on or off depending on the desired behavior.</li>
 </ul>
-<hr>
+<hr />
 <h3 id="5-combining-reward-components"><a class="header" href="#5-combining-reward-components"><strong>5. Combining Reward Components</strong></a></h3>
 <p>The total reward is a weighted sum of all components:</p>
 <pre><code class="language-python">total_reward = (
@@ -308,7 +308,7 @@ This component makes it highly rewarding for the aircraft to approach the target
 <li><strong>Alignment</strong>: Promotes heading efficiency.</li>
 <li><strong>Smoothness</strong>: Discourages abrupt or erratic movements.</li>
 </ul>
-<hr>
+<hr />
 <h3 id="7-why-this-reward-function-is-effective"><a class="header" href="#7-why-this-reward-function-is-effective"><strong>7. Why This Reward Function is Effective</strong></a></h3>
 <ol>
 <li>
@@ -336,7 +336,7 @@ This component makes it highly rewarding for the aircraft to approach the target
 </ul>
 </li>
 </ol>
-<hr>
+<hr />
 
                     </main>
 

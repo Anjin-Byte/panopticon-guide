@@ -156,36 +156,36 @@
                     <main>
                         <h3 id="layout-of-blade-and-its-interface-with-openai-gymnasium"><a class="header" href="#layout-of-blade-and-its-interface-with-openai-gymnasium"><em>Layout of BLADE and Its Interface with OpenAI Gymnasium</em></a></h3>
 <p>To effectively use the <strong>BLADE</strong> environment with OpenAI Gymnasium, it’s essential to understand its architecture and how it bridges the simulation features of Panopticon with the modular reinforcement learning ecosystem of Gym. Here’s a structured breakdown:</p>
-<pre><code class="language-mermaid">sequenceDiagram
+<pre class="mermaid">sequenceDiagram
     participant Train_py as train.py
     participant Game as Game Object
     participant Scenario as Scenario
     participant Gym as Gym Environment
     participant Agent as RL Agent
-<pre><code>Train_py-&amp;gt;&amp;gt;Game: Initialize Game with Scenario
-Train_py-&amp;gt;&amp;gt;Scenario: Load Scenario from JSON
-Train_py-&amp;gt;&amp;gt;Gym: Define Observation and Action Spaces
-Train_py-&amp;gt;&amp;gt;Gym: Set Transformation Functions (Action, Observation, Reward, Termination)
-Train_py-&amp;gt;&amp;gt;Gym: Initialize Gym Environment with Game
 
-loop Training Loop
-    Agent-&amp;gt;&amp;gt;Gym: Take Action
-    Gym-&amp;gt;&amp;gt;Game: Transform Action to Command
-    Game-&amp;gt;&amp;gt;Scenario: Update Scenario State
-    Scenario-&amp;gt;&amp;gt;Game: Adjust Entity Positions
-    Scenario-&amp;gt;&amp;gt;Game: Update Fuel and Resources
-    Scenario-&amp;gt;&amp;gt;Game: Resolve Engagements
-    Scenario-&amp;gt;&amp;gt;Game: Update Mission Objectives
-    Game-&amp;gt;&amp;gt;Gym: Return Updated State
-    Gym-&amp;gt;&amp;gt;Agent: Provide Observation, Reward, and Termination Status
-end
+    Train_py-&gt;&gt;Game: Initialize Game with Scenario
+    Train_py-&gt;&gt;Scenario: Load Scenario from JSON
+    Train_py-&gt;&gt;Gym: Define Observation and Action Spaces
+    Train_py-&gt;&gt;Gym: Set Transformation Functions (Action, Observation, Reward, Termination)
+    Train_py-&gt;&gt;Gym: Initialize Gym Environment with Game
 
-Train_py-&amp;gt;&amp;gt;Agent: Evaluate Trained Agent
-Agent-&amp;gt;&amp;gt;Gym: Interact with Environment for Evaluation
-Gym-&amp;gt;&amp;gt;Train_py: Export Scenario State for Debugging
-</code></pre>
-<p></code></pre></p>
-<pre><code class="language-mermaid">sequenceDiagram
+    loop Training Loop
+        Agent-&gt;&gt;Gym: Take Action
+        Gym-&gt;&gt;Game: Transform Action to Command
+        Game-&gt;&gt;Scenario: Update Scenario State
+        Scenario-&gt;&gt;Game: Adjust Entity Positions
+        Scenario-&gt;&gt;Game: Update Fuel and Resources
+        Scenario-&gt;&gt;Game: Resolve Engagements
+        Scenario-&gt;&gt;Game: Update Mission Objectives
+        Game-&gt;&gt;Gym: Return Updated State
+        Gym-&gt;&gt;Agent: Provide Observation, Reward, and Termination Status
+    end
+
+    Train_py-&gt;&gt;Agent: Evaluate Trained Agent
+    Agent-&gt;&gt;Gym: Interact with Environment for Evaluation
+    Gym-&gt;&gt;Train_py: Export Scenario State for Debugging
+</pre>
+<pre class="mermaid">sequenceDiagram
     participant RLAgent as Stable-Baselines3 Agent
     participant GymEnv as BLADE (Gym Environment)
     participant Game as Game Object
@@ -221,7 +221,7 @@ Gym-&amp;gt;&amp;gt;Train_py: Export Scenario State for Debugging
     GymEnv-&gt;&gt;Game: Execute evaluation steps
     Game-&gt;&gt;Scenario: Log evaluation results
     Game-&gt;&gt;GymEnv: Export final scenario state to JSON
-</code></pre>
+</pre>
 <h3 id="blade-layout"><a class="header" href="#blade-layout"><strong>BLADE Layout</strong></a></h3>
 <p>The BLADE environment acts as a wrapper that integrates the simulation capabilities of the Panopticon system with the reinforcement learning framework. Here’s how its key components are organized:</p>
 <ol>

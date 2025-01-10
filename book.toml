@@ -5,15 +5,13 @@ multilingual = false
 src = "src"
 title = "Training Agents for Panopticon"
 
-[preprocessor]
+
+
+#[preprocessor.blocks]
+#command = "node node_modules/blocks-preprocessor/dist/blocks.js"
 
 [preprocessor.mermaid]
 command = "mdbook-mermaid"
-
-[preprocessor.blocks]
-command = "node node_modules/blocks-preprocessor/dist/blocks.js"
-
-[output]
 
 [output.html]
 additional-css = [
